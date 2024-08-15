@@ -1,0 +1,300 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/background.jpg'); /* Actualizează cu calea către imaginea ta */
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Schimbă opacitatea după preferință */
+    z-index: -1;
+}
+
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.login-container, .user-info, .monitor-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn-discord {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #5865F2;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-discord:hover {
+    background-color: #4752C4;
+    transform: translateY(-3px);
+}
+
+.btn-discord i {
+    margin-right: 10px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.user-info h2 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.monitor-section {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: flex-end; /* Alinează secțiunea de monitoare la dreapta */
+}
+
+.monitor-list-container {
+    max-height: 400px; /* Ajustează înălțimea după nevoie */
+    overflow-y: auto;  /* Adaugă scroll vertical dacă este necesar */
+    border: 1px solid #ddd; /* Optional, pentru a evidenția containerul */
+    padding: 10px; /* Optional, pentru margini interioare */
+    background: rgba(255, 255, 255, 0.2); /* Culoare de fundal */
+    border-radius: 10px; /* Colțuri rotunjite */
+    width: 100%; /* Asigură că containerul ocupă întreaga lățime a secțiunii */
+    max-width: 500px; /* Ajustează lățimea maximă după preferință */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adaugă o umbră pentru un aspect mai bun */
+}
+
+.monitor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Spațiu între elemente */
+}
+
+.monitor-item {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.btn-remove {
+    background-color: #e74c3c; /* Red color for the remove button */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-remove:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}
+/* Stiluri pentru pop-out-ul de profil al utilizatorului */
+#user-profile-popup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+#user-profile-popup .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#user-profile-popup .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+#user-profile-popup .btn-discord {
+    background-color: #4CAF50; /* Green color for the API key button */
+}
+
+#user-profile-popup .btn-discord:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+/* Existing styles... */
+
+/* New styles for API key creation page */
+.api-container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.api-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.api-container .user-info {
+    margin-bottom: 20px;
+}
+
+.api-container .user-info img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.api-container .user-info h2 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.api-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.api-container form button {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #5865F2;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.api-container form button:hover {
+    background-color: #4752C4;
+    transform: translateY(-3px);
+}
+
+.api-container .btn-discord {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #5865F2;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.api-container .btn-discord:hover {
+    background-color: #4752C4;
+    transform: translateY(-3px);
+}

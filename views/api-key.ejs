@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VixUP - API</title>
+    <link rel="stylesheet" type="text/css" href="/css/api.css">
+    <style>
+        /* Pop-up styling */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .popup .close-btn {
+            margin-top: 10px;
+            display: inline-block;
+            background: #f44336;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>API Key Management</h1>
+        </header>
+        <main>
+            <% if (apiKey) { %>
+                <div class="api-key-container">
+                    <p>Your API key is: 
+                        <span id="api-key" class="api-key"><%= apiKey %></span>
+                    </p>
+                    <div class="actions">
+                        <button id="view-api-btn" class="view-btn">View API Key</button>
+                        <form action="/remove-api-key" method="post">
+                            <input type="hidden" name="username" value="<%= user.username %>">
+                            <button type="submit" class="remove-btn">Remove Key</button>
+                        </form>
+                    </div>
+                    <p class="note">This is your API key. Save it somewhere safe, as you will not be able to see it again. If you need to generate a new key, you can do so.</p>
+                </div>
+                <div id="shortened-info" class="shortened-info">
+                    <p>Your API key has been shortened. If you want to see it again, regenerate or request in Discord.</p>
+                    <p>DO NOT SHARE THIS API KEY!</p>
+                </div>
+            <% } else { %>
+                <div class="api-key-container">
+                    <p>You do not have an API key. Click the button below to generate one.</p>
+                    <form action="/create-api-key" method="post">
+                        <input type="hidden" name="username" value="<%= user.username %>">
+                        <button type="submit">Generate API Key</button>
+                    </form>
+                </div>
+            <% } %>
+        </main>
+    </div>
+
+    <!-- Pop-up for full API key -->
+    <div id="popup" class="popup">
+        <p>Your full API key is:</p>
+        <p id="full-api-key"><%= apiKey %></p>
+        <button id="close-popup-btn" class="close-btn">Close Embed</button>
+    </div>
+
+    <script>
+        // Script pentru scurtarea cheii API
+        document.addEventListener('DOMContentLoaded', function() {
+            var apiKeyElem = document.getElementById('api-key');
+            if (apiKeyElem) {
+                var fullKey = apiKeyElem.textContent;
+                var shortenedKey = fullKey.substring(0, 10) + '...' + fullKey.substring(fullKey.length - 10);
+                apiKeyElem.textContent = shortenedKey;
+            }
+
+            var viewApiBtn = document.getElementById('view-api-btn');
+            var popup = document.getElementById('popup');
+            var closePopupBtn = document.getElementById('close-popup-btn');
+
+            viewApiBtn.addEventListener('click', function() {
+                popup.style.display = 'block';
+            });
+
+            closePopupBtn.addEventListener('click', function() {
+                popup.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VixUP - Home</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>Welcome to VixUP</h1>
+        <div class="user-info">
+            <img src="<%= user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png' %>" alt="Avatar" class="avatar">
+            <h2><%= user.username %></h2>
+            <button class="btn-discord" id="user-profile-button">
+                <i class="fas fa-user"></i> User Profile
+            </button>
+        </div>
+        <div class="monitor-section">
+            <h2>Monitors</h2>
+            <button class="btn-discord" id="add-monitor-button">
+                <i class="fas fa-plus"></i> Add Monitor
+            </button>
+            <div class="monitor-list-container">
+                <% monitors.forEach(monitor => { %>
+                    <div class="monitor-item">
+                        <h3><%= monitor.name %></h3>
+                        <p><strong>URL:</strong> <%= monitor.url %></p>
+                        <p><strong>Interval:</strong> <%= monitor.interval %> seconds</p>
+                        <button class="btn-discord" onclick="showNotificationSettings('<%= monitor.id %>')">Configure Notifications</button>
+                        <button class="btn-discord" onclick="editMonitor('<%= monitor.id %>', '<%= monitor.name %>', '<%= monitor.url %>')">Edit Monitor</button>
+                        <form action="/remove-monitor" method="post" style="display:inline;">
+                            <input type="hidden" name="monitorId" value="<%= monitor.id %>">
+                            <button type="submit" class="btn-discord btn-remove">Remove Monitor</button>
+                        </form>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+        <div id="monitor-form" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="form-title">Add New Monitor</h2>
+                <form id="monitor-form-content">
+                    <input type="hidden" id="monitor-id" name="monitorId">
+                    <label for="name">Friendly Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    
+                    <label for="url">URL:</label>
+                    <input type="url" id="url" name="url" required>
+                    
+                    <h3>Notification Webhook URL</h3>
+                    <label for="webhook-url">Webhook URL:</label>
+                    <input type="url" id="webhook-url" name="webhookUrl" required>
+                    
+                    <button type="button" class="btn-discord" onclick="saveMonitor()">Save Monitor</button>
+                    <button type="button" class="btn-discord" id="test-webhook-button">Test Webhook</button>
+                </form>
+                <div id="test-webhook-result"></div>
+            </div>
+        </div>
+        <div id="notification-settings" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Configure Notifications</h2>
+                <form id="notification-settings-form">
+                    <input type="hidden" id="notification-monitor-id" name="monitorId">
+                    
+                    <h3>Notification Webhook URL</h3>
+                    <label for="notification-webhook-url">Webhook URL:</label>
+                    <input type="url" id="notification-webhook-url" name="webhookUrl" required>
+                    
+                    <button type="button" class="btn-discord" onclick="saveNotificationSettings()">Save Notifications</button>
+                </form>
+            </div>
+        </div>
+        <div id="user-profile-popup" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Discord User Profile</h2>
+                <img src="<%= user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png' %>" alt="Avatar" class="avatar">
+                <p><strong>Username:</strong> <%= user.username %></p>
+                <a href="/api-key" class="btn-discord">Create API Key</a>
+                <button class="btn-discord" onclick="createUptimePages()">Create Uptime Pages</button>
+                <a href="/logout" class="btn-discord">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        const monitorForm = document.getElementById('monitor-form');
+        const notificationSettings = document.getElementById('notification-settings');
+        const userProfilePopup = document.getElementById('user-profile-popup');
+        const closeButtons = document.querySelectorAll('.close');
+        const testWebhookButton = document.getElementById('test-webhook-button');
+        const testWebhookResult = document.getElementById('test-webhook-result');
+        
+        document.getElementById('add-monitor-button').onclick = function() {
+            document.getElementById('form-title').textContent = 'Add New Monitor';
+            document.getElementById('monitor-id').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('url').value = '';
+            document.getElementById('webhook-url').value = '';
+            monitorForm.style.display = 'block';
+        };
+
+        document.getElementById('user-profile-button').onclick = function() {
+            userProfilePopup.style.display = 'block';
+        };
+
+        closeButtons.forEach(button => {
+            button.onclick = function() {
+                monitorForm.style.display = 'none';
+                notificationSettings.style.display = 'none';
+                userProfilePopup.style.display = 'none';
+            };
+        });
+
+        function showNotificationSettings(monitorId) {
+            document.getElementById('notification-monitor-id').value = monitorId;
+            notificationSettings.style.display = 'block';
+        }
+
+        function editMonitor(id, name, url) {
+            document.getElementById('form-title').textContent = 'Edit Monitor';
+            document.getElementById('monitor-id').value = id;
+            document.getElementById('name').value = name;
+            document.getElementById('url').value = url;
+            monitorForm.style.display = 'block';
+        }
+
+        function saveMonitor() {
+    const form = document.getElementById('monitor-form-content');
+    const formData = new FormData(form);
+    const url = document.getElementById('monitor-id').value ? '/edit-monitor' : '/add-monitor';
+    
+    fetch(url, {
+        method: 'POST',
+        body: new URLSearchParams(formData).toString(),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+    .then(response => response.text())
+    .then(() => {
+        window.location.reload();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+        function addMonitor() {
+            const form = document.getElementById('monitor-form-content');
+            const formData = new FormData(form);
+            fetch('/add-monitor', {
+                method: 'POST',
+                body: new URLSearchParams(formData).toString(),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => response.text())
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function saveNotificationSettings() {
+            const form = document.getElementById('notification-settings-form');
+            const formData = new FormData(form);
+            fetch('/set-notifications', {
+                method: 'POST',
+                body: new URLSearchParams(formData).toString(),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => response.text())
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        window.onclick = function(event) {
+            if (event.target == monitorForm || event.target == notificationSettings || event.target == userProfilePopup) {
+                monitorForm.style.display = 'none';
+                notificationSettings.style.display = 'none';
+                userProfilePopup.style.display = 'none';
+            }
+        };
+
+        testWebhookButton.onclick = function() {
+            const webhookUrl = document.getElementById('webhook-url').value;
+            fetch('/test-webhook', {
+                method: 'POST',
+                body: new URLSearchParams({ webhookUrl }).toString(),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                testWebhookResult.innerHTML = `<p>${data.message}</p>`;
+            })
+            .catch(error => console.error('Error:', error));
+        };
+        function createUptimePages() {
+        window.location.href = '/create-uptime-pages';
+    }
+    </script>
+</body>
+</html>

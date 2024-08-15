@@ -1,0 +1,6 @@
+{
+    "clientID": "1271427959546314824",
+    "clientSecret": "hpEtjKhHWRL-6f63xi3WTomzOLwn8ax8",
+    "callbackURL": "https://vixup.onrender.com/auth/discord/callback",
+    "token": "YOUR_OPTIONAL_TOKEN"
+}

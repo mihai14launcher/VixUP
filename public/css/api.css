@@ -1,0 +1,89 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #1e1e2d;
+    color: #c8c8d2;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #2b2b3b;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.api-key-container {
+    background-color: #343445;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.api-key {
+    font-weight: bold;
+    color: #00b0ff;
+}
+
+.actions {
+    margin-top: 10px;
+}
+
+.view-btn, .remove-btn, .close-btn {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 10px 20px;
+    color: white;
+    background-color: #f44336;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.view-btn:hover, .remove-btn:hover, .close-btn:hover {
+    background-color: #d32f2f;
+}
+
+.note {
+    font-size: 14px;
+    color: #a0a0b2;
+}
+
+.shortened-info {
+    font-size: 12px;
+    color: #c8c8d2;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: #1e1e2d;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.popup .close-btn {
+    background: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.popup .close-btn:hover {
+    background-color: #d32f2f;
+}
